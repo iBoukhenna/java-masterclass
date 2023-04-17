@@ -1,12 +1,16 @@
 package com.dzcode.app;
 
-class Runner extends Thread {
+import java.util.Scanner;
+
+class Processor extends Thread {
+
+    private boolean running = true;
 
     public void run() {
 
-        for (int i = 0; i < 10; i++) {
+        while (running) {
 
-            System.out.println("Hello " + i);
+            System.out.println("Hello ");
 
             try {
                 Thread.sleep(100);
@@ -16,6 +20,10 @@ class Runner extends Thread {
             }
         }
     }
+
+    public void shutdown() {
+        running = false;
+    }
 }
 
 public final class App {
@@ -24,10 +32,13 @@ public final class App {
 
     public static void main(String[] args) {
 
-        Runner runner1 = new Runner();
-        runner1.start();
+        Processor processor1 = new Processor();
+        processor1.start();
 
-        Runner runner2 = new Runner();
-        runner2.start();
+        System.out.println("Press return to stop ...");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+
+        processor1.shutdown();
     }
 }
