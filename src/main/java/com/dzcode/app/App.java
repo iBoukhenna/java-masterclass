@@ -4,6 +4,10 @@ public class App {
 
     private int count = 0;
 
+    public void increment() {
+        count++;
+    }
+
     public static void main(String[] args) {
         App app = new App();
         app.doWork();
@@ -15,7 +19,7 @@ public class App {
             @Override
             public void run() {
                 for (int i = 0; i < 10000; i++) {
-                    count++;
+                    increment();
                 }
             }
         });
@@ -25,7 +29,7 @@ public class App {
             @Override
             public void run() {
                 for (int i = 0; i < 10000; i++) {
-                    count++;
+                    increment();
                 }
             }
         });
@@ -41,6 +45,7 @@ public class App {
             e.printStackTrace();
         }
 
+        // count isn't equal 20000
         System.out.println("Count is : " + count);
     }
 }
