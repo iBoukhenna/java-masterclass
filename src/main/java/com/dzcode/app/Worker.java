@@ -8,27 +8,34 @@ public class Worker {
 
     private Random random = new Random();
 
+    private Object lock1 = new Object();
+    private Object lock2 = new Object();
+
     private List<Integer> list1 = new ArrayList<Integer>();
     private List<Integer> list2 = new ArrayList<Integer>();
 
-    public synchronized void stageOne() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    public void stageOne() {
+        synchronized (lock1) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            list1.add(random.nextInt());
         }
-        list1.add(random.nextInt());
     }
 
-    public synchronized void stageTwo() {
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    public void stageTwo() {
+        synchronized (lock2) {
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            list2.add(random.nextInt());
         }
-        list2.add(random.nextInt());
     }
 
     public void process() {
