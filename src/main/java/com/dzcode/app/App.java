@@ -4,7 +4,7 @@ public class App {
 
     private int count = 0;
 
-    public void increment() {
+    public synchronized void increment() {
         count++;
     }
 
@@ -45,7 +45,7 @@ public class App {
             e.printStackTrace();
         }
 
-        // count isn't equal 20000
+        // synchronized fix it, count is equal 20000
         System.out.println("Count is : " + count);
     }
 }
