@@ -1,4 +1,4 @@
-package com.dzcode.app;
+package com.dzcode.app2;
 
 class Runner extends Thread {
 
@@ -17,17 +17,17 @@ class Runner extends Thread {
         }
     }
 }
-
+    
 public final class App {
     private App() {
     }
 
     public static void main(String[] args) {
 
-        Runner runner1 = new Runner();
-        runner1.start();
+        Thread thread1 = new Thread(new Runner());
+        thread1.start();
 
-        Runner runner2 = new Runner();
-        runner2.start();
+        Thread thread2 = new Thread(new Runner());
+        thread2.start();
     }
 }
