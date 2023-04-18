@@ -2,14 +2,14 @@ package com.dzcode.app;
 
 public class App {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
 
-        final Processor processor = new Processor();
+        final Runner runner = new Runner();
 
         Thread t1 = new Thread(new Runnable() {
             public void run() {
                 try {
-                    processor.produce();
+                    runner.firstThread();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -19,7 +19,7 @@ public class App {
         Thread t2 = new Thread(new Runnable() {
             public void run() {
                 try {
-                    processor.consume();
+                    runner.secondThread();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -31,5 +31,7 @@ public class App {
 
         t1.join();
         t2.join();
+
+        runner.finished();
     }
 }
