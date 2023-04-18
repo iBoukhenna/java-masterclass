@@ -1,46 +1,48 @@
 package com.dzcode.app;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 class Processor implements Runnable {
-    private int id;
+    private CountDownLatch latch;
 
-    public Processor(int id) {
-        this.id = id;
+    public Processor(CountDownLatch latch) {
+        this.latch = latch;
     }
 
     public void run() {
-        System.out.println("Starting: " + id);
+        System.out.println("Started.");
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
-        System.out.println("Completed: " + id);
+        latch.countDown();
     }
 }
 
 public class App {
 
     public static void main(String[] args) {
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        CountDownLatch latch = new CountDownLatch(3);
 
-        for (int i=0; i<5; i++) {
-            executorService.submit(new Processor(i));
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        for (int i = 0; i < 3; i++) {
+            executor.submit(new Processor(latch));
         }
-
-        executorService.shutdown();
-
-        System.out.println("All tasks submitted.");
 
         try {
-            executorService.awaitTermination(1, TimeUnit.DAYS);
+            latch.await();
         } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
-        System.out.println("All tasks completed.");
+        System.out.println("Completed.");
     }
 }
