@@ -1,48 +1,62 @@
 package com.dzcode.app;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-class Processor implements Runnable {
-    private CountDownLatch latch;
-
-    public Processor(CountDownLatch latch) {
-        this.latch = latch;
-    }
-
-    public void run() {
-        System.out.println("Started.");
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        latch.countDown();
-    }
-}
+import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class App {
 
-    public static void main(String[] args) {
-        CountDownLatch latch = new CountDownLatch(3);
+    private static BlockingQueue<Integer> queue = new ArrayBlockingQueue<Integer>(10);
 
-        ExecutorService executor = Executors.newFixedThreadPool(3);
+    public static void main(String[] args) throws InterruptedException {
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    App.producer();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
 
-        for (int i = 0; i < 3; i++) {
-            executor.submit(new Processor(latch));
+        Thread t2 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    App.consumer();
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+    }
+
+    private static void producer() throws InterruptedException {
+        Random random = new Random();
+
+        while(true) {
+            queue.put(random.nextInt(100));
         }
+    }
 
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    private static void consumer() throws InterruptedException {
+        Random random = new Random();
+
+        while(true) {
+            Thread.sleep(100);
+
+            if(random.nextInt(10) == 0) {
+                Integer value = queue.take();
+
+                System.out.println("Taken value: " + value + "; Queue size is: " + queue.size());
+            }
         }
-
-        System.out.println("Completed.");
     }
 }
