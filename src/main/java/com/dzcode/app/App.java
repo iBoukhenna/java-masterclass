@@ -1,53 +1,43 @@
 package com.dzcode.app;
 
-import java.io.IOException;
 import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class App {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("Starting ...");
 
-        ExecutorService executor = Executors.newCachedThreadPool();
-
-        Future<Integer> future = executor.submit(new Callable<Integer>() {
-            
-            public Integer call() throws Exception {
+        Thread t1 = new Thread(new Runnable() {
+            public void run() {
                 Random random = new Random();
-                int duration = random.nextInt(4000);
-                System.out.println("Starting ...");
 
-                if(duration > 2000) {
-                    throw new IOException("Sleeping for too long.");
+                for (int i = 0; i < 1E8; i++) {
+
+                    /*if (Thread.currentThread().isInterrupted()) {
+                        System.out.println("Interrupted!");
+                        break;
+                    }*/
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        System.out.println("Interrupted!");
+                        break;
+                    }
+
+                    Math.sin(random.nextDouble());
                 }
-
-                try {
-                    Thread.sleep(duration);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-                System.out.println("Finished.");
-
-                return duration;
             }
         });
 
-        executor.shutdown();
+        t1.start();
 
-        try {
-            System.out.println("Result is: " + future.get());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            IOException exception = (IOException) e.getCause();
-            System.out.println(exception.getMessage());
-        }
+        Thread.sleep(500);
+
+        t1.interrupt();
+
+        t1.join();
+
+        System.out.println("Finished.");
     }
 }
