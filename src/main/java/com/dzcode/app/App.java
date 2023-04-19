@@ -1,25 +1,53 @@
 package com.dzcode.app;
 
+import java.io.IOException;
+import java.util.Random;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Future;
 
 public class App {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         ExecutorService executor = Executors.newCachedThreadPool();
 
-        for (int i = 0; i < 200; i++) {
-            executor.submit(new Runnable() {
-                public void run() {
-                    Connection.getInstance().connect();
+        Future<Integer> future = executor.submit(new Callable<Integer>() {
+            
+            public Integer call() throws Exception {
+                Random random = new Random();
+                int duration = random.nextInt(4000);
+                System.out.println("Starting ...");
+
+                if(duration > 2000) {
+                    throw new IOException("Sleeping for too long.");
                 }
-            });
-        }
+
+                try {
+                    Thread.sleep(duration);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+                System.out.println("Finished.");
+
+                return duration;
+            }
+        });
 
         executor.shutdown();
 
-        executor.awaitTermination(1, TimeUnit.DAYS);
+        try {
+            System.out.println("Result is: " + future.get());
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            IOException exception = (IOException) e.getCause();
+            System.out.println(exception.getMessage());
+        }
     }
 }
