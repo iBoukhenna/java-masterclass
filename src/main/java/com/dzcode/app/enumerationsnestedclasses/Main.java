@@ -1,7 +1,6 @@
 package com.dzcode.app.enumerationsnestedclasses;
 
 import com.dzcode.app.enumerationsnestedclasses.aircraft.Aircraft;
-import com.dzcode.app.enumerationsnestedclasses.aircraft.TakeOffDistancingRules;
 import static com.dzcode.app.enumerationsnestedclasses.aircraft.WakeTurbulence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,11 +18,9 @@ public class Main {
             new Aircraft(1004, "A380", SUPER)
         );
 
-        TakeOffDistancingRules takeOffRules = new TakeOffDistancingRules();
-
         int offset = 0;
         for (Aircraft a : aircraft) {
-            offset += takeOffRules.calculateWaitTime(a);
+            offset += a.getWakeTurbulence().getTimeOffset();
             LocalDateTime depTime = now().plusSeconds(offset);
             System.out.println("Aircraft " + a.getModeADecimal() + " takes off at " + depTime.toLocalTime());
         }
