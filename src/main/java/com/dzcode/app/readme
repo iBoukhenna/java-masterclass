@@ -1,0 +1,59 @@
+
+interface Function<T, R> {
+    R apply(T value);
+}
+
+interface Consumer<T> {
+    void accept(T value);
+}
+
+interface Supplier<T> {
+    T get();
+}
+
+interface Predicate<T>{
+    boolean test(T value);
+}
+
+interface UnaryOperator<T>{
+    T apply(T value);
+}
+
+interface BiFunction<T, U, R> {
+    R apply(T v1, U v2);
+}
+
+interface BiConsumer<T, U> {
+    void accept(T v1, U v2);
+}
+
+interface BiPredicate<T, U>{
+    boolean test(T v1, U v2);
+}
+
+interface BinaryOperator<T>{
+    T apply(T v1, T v2);
+}
+
+Specialized Standard Functional Interfaces
+PrefixToSuffixInterface for [int, long, double]
+
+XFunction<R>
+XToYFunction
+ToXFunction<T>
+ToXBiFunction<T, U>
+XUnaryOperator
+XPredicate
+XConsumer<T>
+ObjXConsumer<T>
+XSupplier
+XBinaryOperator
+
+X, Y = Int, Long, Double
+
+Extra : BooleanSupplier
+
+Example : 
+IntFunction<R>
+LongToDoubleFunction
+ObjIntConsumer<T>
